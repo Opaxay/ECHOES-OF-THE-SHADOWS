@@ -2,6 +2,7 @@ import pygame as pg #pour simplifier l'écriture = pg -long que pygame
 from pygame.locals import * #pour les constantes comme QUIT ou K_LEFT
 import random
 
+
 from cartes import cartes #pour appeller toutes les cartes on créé notre propre bibliothèque
 
 # on lance pygame
@@ -31,15 +32,19 @@ horloge = pg.time.Clock() #pour simplifier plus tard pour la commande des images
 
 # Charger les Textures
 
-spritesheet = pg.image.load('Zelda_animation.png').convert_alpha()
-sols_textures = pg.image.load('ground_texture.png').convert_alpha()
+spritesheet = pg.image.load('textures/Zelda/Zelda_animation.png').convert_alpha()
+sols_textures = pg.image.load('textures/ground/ground_texture.png').convert_alpha()
 sols_textures = pg.transform.scale(sols_textures, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-pont_texture = pg.image.load('bridge_texture.png').convert_alpha()
+pont_texture = pg.image.load('textures/ground/bridge_texture.png').convert_alpha()
 pont_texture = pg.transform.scale(pont_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-water_texture = pg.image.load('water.png').convert_alpha()
+water_texture = pg.image.load('textures/ground/water.png').convert_alpha()
 water_texture = pg.transform.scale(water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-
-
+arbre1 = pg.image.load('textures/Tree/Tree-1-4.png')  # Load the decoration texture
+arbre1 = pg.transform.scale(arbre1, (60, 80))  # Resize the decoration texture
+arbre2 = pg.image.load('textures/Tree/Tree-1-2.png')  # Load the decoration texture
+arbre2 = pg.transform.scale(arbre2, (30, 40))  # Resize the decoration texture
+arbre3 = pg.image.load('textures/Tree/Tree-3-4.png')  # Load the decoration texture
+arbre3 = pg.transform.scale(arbre3, (60, 80))  # Resize the decoration texture
 #Variables
 
 perso = pg.Rect(100, 320, 40, 40)  # le perso, ou plutôt sa "hitbox"
@@ -48,40 +53,77 @@ carte = cartes[0] #création de la carte avec la liste "cartes"
 portail = [] #création de la liste (vide) pour les portails
 eaux = [] #création de la liste (vide) pour l'eau
 murs =[] #création de la liste (vide) pour les murs
+decorations = [] #création de la liste (vide) pour les décorations
 vitesse = 3.5
-
-
-for y in range(0, 13): # on parcourt les ligne de liste
-    for x in range(0, 20): # on parcourt les element des ligne dans la liste
-        if carte[y][x] == 1: #on parcourt la liste pour chaque 1 qui correspond a de l'eau
-            eaux.append(pg.Rect(x * 40, y * 40, 40, 40))# on rajoute dans la liste "eaux" des rectangle de taille 40*40
-        elif carte[y][x] == 2:  #on parcourt la liste pour chaque 2 qui correspond aux murs
-            murs.append(pg.Rect(x * 40, y * 40, 40, 40))# on rajoute dans la liste "murs" des rectangle de taille 40*40
-        elif carte[y][x] == 3:  #on parcourt la liste pour chaque 3 qui correspond aux portails
-            portail.append(pg.Rect(x * 40, y * 40, 40, 40))# on rajoute dans la liste "portail" des rectangle de taille 40*40
-
-
 i_anim = 0 
+
+# Initialize a storage for the chosen textures for each tile
+chosen_textures = [[None for _ in range(20)] for _ in range(13)]
+
+# Initialize texture storage
+textures = {
+    1: [pg.transform.rotate(water_texture, angle) for angle in [-90, 90, 180]],
+    4: [pg.transform.rotate(pont_texture, angle) for angle in [90]],
+    'sols': [pg.transform.rotate(sols_textures, angle) for angle in [-90, 90, 180]]
+}
+
+# Populate the lists based on the map and store the chosen textures
+for y in range(0, 13):
+    for x in range(0, 20):
+        if carte[y][x] == 1:
+            eaux.append(pg.Rect(x * 40, y * 40, 40, 40))
+            chosen_textures[y][x] = random.choice(textures[1])
+        elif carte[y][x] == 2:
+            murs.append(pg.Rect(x * 40, y * 40, 40, 40))
+        elif carte[y][x] == 3:
+            portail.append(pg.Rect(x * 40, y * 40, 40, 40))
+        elif carte[y][x] == 4:
+            chosen_textures[y][x] = textures[4][0]
+        else:
+            chosen_textures[y][x] = random.choice(textures['sols'])
+
+# Add decorations to the list with their positions
+decorations.append((arbre1, (100, 100)))  # Example decoration
+decorations.append((arbre2, (100, 200)))  # Example decoration
+decorations.append((arbre3, (100, 300)))  # Example decoration
+decorations.append((arbre1, (200, 100)))  # Example decoration
+
+# Initialize vertical offset for water animation
+water_offset = 0
+
 def affichage_sol():
-    # on dessine
+    global water_offset
+    # Clear the screen by filling it with a background color (e.g., black)
+    fenetre.fill((0, 0, 0))
+    
+    # Update the vertical offset for water animation
+    water_offset = (water_offset + 1) % 40  # Adjust the speed of the flow by changing the increment value
+    
+    # Draw the water elements first
     for y in range(0, 13):
         for x in range(0, 20):
-            if carte[y][x] == 1: 
-                angle_rotation = random.choice([-90, 90, 180])
-                texture = pg.transform.rotate(water_texture, angle_rotation)
-                fenetre.blit(texture, (x * 40, y * 40))
-            elif carte[y][x] == 2:
-                pg.draw.rect(fenetre, (255, 0, 0), (x * 40, y * 40, 40, 40), 0) #on dessine un rectangle rouge de taille 40*40
-            elif carte[y][x] == 3:
-                pg.draw.rect(fenetre, (255, 0, 255), (x * 40, y * 40, 40, 40), 0)#on dessine un rectangle violet de taille 40*40
-            elif carte[y][x] == 4:
-                texture = pg.transform.rotate(pont_texture, 0)
-                fenetre.blit(pont_texture, (x * 40, y * 40))
+            if carte[y][x] == 1:
+                texture = chosen_textures[y][x]
+                fenetre.blit(texture, (x * 40, y * 40 + water_offset - 40))  # Apply the vertical offset
 
-            else:
-                angle_rotation = random.choice([-90, 90, 180])
-                texture = pg.transform.rotate(sols_textures, angle_rotation)
+    # Draw the other elements on top of the water
+    for y in range(0, 13):
+        for x in range(0, 20):
+            if carte[y][x] == 2:
+                pg.draw.rect(fenetre, (255, 0, 0), (x * 40, y * 40, 40, 40), 0)
+            elif carte[y][x] == 3:
+                pg.draw.rect(fenetre, (255, 0, 255), (x * 40, y * 40, 40, 40), 0)
+            elif carte[y][x] == 4:
+                texture = chosen_textures[y][x]
                 fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 0:
+                texture = chosen_textures[y][x]
+                fenetre.blit(texture, (x * 40, y * 40))
+
+    # Draw the decorations
+    for decoration in decorations:
+        texture, position = decoration
+        fenetre.blit(texture, position)
 
 
 
@@ -138,7 +180,7 @@ continuer = True
 
 while continuer:
     horloge.tick(60)
-
+    
 
     # Dessine le personnage
     fenetre.blit(image, perso)
@@ -152,10 +194,9 @@ while continuer:
     # on bascule l'affichage, une seule fois
     # par passage dans la boucle perpétuelle
 
-    if sol_afficher_bool is not True:
-        affichage_sol()
-        print('prout')
-        sol_afficher_bool = True
+
+    affichage_sol()
+
 
     #collision avec les portails?
     if collision_portail():
@@ -212,8 +253,8 @@ while continuer:
             perso.right = 0  # Revenir à gauche
         elif perso.right <= 0:  # Dépasse par la gauche ?
             perso.left = LARGEUR  # Revenir à droite
-        for mur in murs:
-            if perso.colliderect(mur):  # Collision avec un mur
+        for eau in eaux:
+            if perso.colliderect(eau):  # Collision avec un mur
                 perso.x -= final_dx  # Annuler le déplacement
 
         # Animation en fonction de la direction
@@ -235,8 +276,8 @@ while continuer:
             perso.bottom = 0  # Revenir en haut
         elif perso.bottom <= 0:  # Dépasse par le haut ?
             perso.top = HAUTEUR  # Revenir en bas
-        for mur in murs:
-            if perso.colliderect(mur):  # Collision avec un mur
+        for eau in eaux:
+            if perso.colliderect(eau):  # Collision avec un mur
                 perso.y -= final_dy  # Annuler le déplacement
 
         # Animation en fonction de la direction
