@@ -171,57 +171,86 @@ while continuer:
         print("touche Escape, on sort") #quitter le jeu
         continuer = False
 
-    if touches[K_d]:
-        perso.x += vitesse #le pero avance 
-        if perso.left >= LARGEUR: # on dépasse les limites de la carte?
-            perso.right = 0 #on revient a gauche
-        for mur in murs : 
-            if perso.colliderect(mur):#collision avec les murs?
-                perso.x -= vitesse # effet de surplace en revenant en arriere de la meme vitesse que celle avancée
-        # animation
-        i_anim += 1 # on passe a l'image de l'animation suivante
-        if i_anim >= len(droite):
-            i_anim = 0 #si on dépasse toute les animation on revient à la première
-        image = droite[i_anim] # affiche l'image de l'animation de droite
-        
-    if touches[K_q]:
-        perso.x -= vitesse #le pero avance
-        if perso.right <= 0: # on dépasse les limites de la carte?
-            perso.left = LARGEUR #on revient a droite
-        for mur in murs :
-            if perso.colliderect(mur): #collision avec les murs?
-                perso.x += vitesse # effet de surplace en revenant en arriere de la meme vitesse que celle avancée
-        # animation
-        i4_anim += 1 # on passe a l'image de l'animation suivante
-        if i4_anim >= len(gauche):
-            i4_anim = 0 #si on dépasse toute les animation on revient à la première
-        image = gauche[i4_anim] # affiche l'image de l'animation de gauche
+        # Gestion des entrées clavier, souris et manette
+    if joystick:  # Vérifier si une manette est connectée
+        # Lire les axes de la manette (valeurs entre -1.0 et 1.0)
+        x_axis = joystick.get_axis(0)  # Axe horizontal (gauche-droite)
+        y_axis = joystick.get_axis(1)  # Axe vertical (haut-bas)
 
+        # Seuil pour éviter les petites variations (zone morte)
+        dead_zone = 0.1
+        if abs(x_axis) < dead_zone:
+            x_axis = 0
+        if abs(y_axis) < dead_zone:
+            y_axis = 0
+
+        # Convertir les axes en déplacement
+        joystick_dx = int(x_axis * vitesse)
+        joystick_dy = int(y_axis * vitesse)
+    else:
+        joystick_dx = joystick_dy = 0  # Pas de manette
+
+    # Lire les entrées clavier
+    dx = dy = 0  # Déplacement clavier par défaut
+    if touches[K_d]:
+        dx += vitesse
+    if touches[K_q]:
+        dx -= vitesse
     if touches[K_z]:
-        perso.y -= vitesse #le pero avance
-        if perso.bottom <= 0: # on dépasse les limites de la carte?
-            perso.top = HAUTEUR #on revient en bas
-        for mur in murs :
-            if perso.colliderect(mur): #collision avec les murs?
-                perso.y += vitesse # effet de surplace en revenant en arriere de la meme vitesse que celle avancée
-        # animation
-        i2_anim += 1 # on passe a l'image de l'animation suivante
-        if i2_anim >= len(haut):
-            i2_anim = 0  #si on dépasse toute les animation on revient à la première
-        image = haut[i2_anim] # affiche l'image de l'animation du haut
-        
+        dy -= vitesse
     if touches[K_s]:
-        perso.y += vitesse #le pero avance
-        if perso.top >= HAUTEUR: # on dépasse les limites de la carte?
-            perso.bottom = 0 #on revient en haut
-        for mur in murs : 
-            if perso.colliderect(mur):#collision avec les murs?
-                perso.y -= vitesse # effet de surplace en revenant en arriere de la meme vitesse que celle avancée
-        # animation
-        i3_anim += 1 # on passe a l'image de l'animation suivante
-        if i3_anim >= len(bas):
-            i3_anim = 0 #si on dépasse toute les animation on revient à la première
-        image = bas[i3_anim]# affiche l'image de l'animation du bas
+        dy += vitesse
+
+    # Combiner les entrées de la manette et du clavier
+    final_dx = dx + joystick_dx
+    final_dy = dy + joystick_dy
+
+    # Appliquer les déplacements horizontaux
+    if final_dx != 0:
+        perso.x += final_dx
+        if perso.left >= LARGEUR:  # Dépasse les limites de la carte ?
+            perso.right = 0  # Revenir à gauche
+        elif perso.right <= 0:  # Dépasse par la gauche ?
+            perso.left = LARGEUR  # Revenir à droite
+        for mur in murs:
+            if perso.colliderect(mur):  # Collision avec un mur
+                perso.x -= final_dx  # Annuler le déplacement
+
+        # Animation en fonction de la direction
+        if final_dx > 0:  # Droite
+            i_anim += 1
+            if i_anim >= len(droite):
+                i_anim = 0
+            image = droite[i_anim]
+        elif final_dx < 0:  # Gauche
+            i4_anim += 1
+            if i4_anim >= len(gauche):
+                i4_anim = 0
+            image = gauche[i4_anim]
+
+    # Appliquer les déplacements verticaux
+    if final_dy != 0:
+        perso.y += final_dy
+        if perso.top >= HAUTEUR:  # Dépasse les limites de la carte ?
+            perso.bottom = 0  # Revenir en haut
+        elif perso.bottom <= 0:  # Dépasse par le haut ?
+            perso.top = HAUTEUR  # Revenir en bas
+        for mur in murs:
+            if perso.colliderect(mur):  # Collision avec un mur
+                perso.y -= final_dy  # Annuler le déplacement
+
+        # Animation en fonction de la direction
+        if final_dy < 0:  # Haut
+            i2_anim += 1
+            if i2_anim >= len(haut):
+                i2_anim = 0
+            image = haut[i2_anim]
+        elif final_dy > 0:  # Bas
+            i3_anim += 1
+            if i3_anim >= len(bas):
+                i3_anim = 0
+            image = bas[i3_anim]
+
 
 # on stoppe pygame
 pg.quit()
