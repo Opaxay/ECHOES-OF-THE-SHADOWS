@@ -1,14 +1,15 @@
 import pygame as pg #pour simplifier l'écriture = pg -long que pygame
 from pygame.locals import * #pour les constantes comme QUIT ou K_LEFT
 import random
-
-
+from textures import *
 from cartes import cartes #pour appeller toutes les cartes on créé notre propre bibliothèque
+from affichage import *
+import os
 
-# on lance pygame
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+
 pg.init()
-
-# Module pour manettes
+pg.mixer.init()
 pg.joystick.init()
 
 # Vérifier si des manettes sont connectées
@@ -19,111 +20,61 @@ if pg.joystick.get_count() > 0:
 else:
     print("Aucune manette détectée.")
 
-
-
-
-#Réglages
+# Parametres de la fenetre
 
 LARGEUR, HAUTEUR = 800, 480 #Dimensions
-fenetre = pg.display.set_mode((LARGEUR, HAUTEUR))#, FULLSCREEN) # fenêtre d'affichage de dimension LARGEUR, HAUTEUR
+fenetre = pg.display.set_mode((LARGEUR, HAUTEUR)) # fenêtre d'affichage de dimension LARGEUR, HAUTEUR
 pg.display.set_caption("Zelda")#nom de la fenetre
 horloge = pg.time.Clock() #pour simplifier plus tard pour la commande des images par seconde
 
 
-# Charger les Textures
-
-spritesheet = pg.image.load('textures/Zelda/Zelda_animation.png').convert_alpha()
-sols_textures = pg.image.load('textures/ground/ground_texture.png').convert_alpha()
-sols_textures = pg.transform.scale(sols_textures, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-pont_texture = pg.image.load('textures/ground/bridge_texture.png').convert_alpha()
-pont_texture = pg.transform.scale(pont_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-water_texture = pg.image.load('textures/ground/water.png').convert_alpha()
-water_texture = pg.transform.scale(water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-arbre1 = pg.image.load('textures/Tree/Tree-1-4.png')  # Load the decoration texture
-arbre1 = pg.transform.scale(arbre1, (60, 80))  # Resize the decoration texture
-arbre2 = pg.image.load('textures/Tree/Tree-1-2.png')  # Load the decoration texture
-arbre2 = pg.transform.scale(arbre2, (30, 40))  # Resize the decoration texture
-arbre3 = pg.image.load('textures/Tree/Tree-3-4.png')  # Load the decoration texture
-arbre3 = pg.transform.scale(arbre3, (60, 80))  # Resize the decoration texture
-#Variables
+# Parametres du jeu
 
 perso = pg.Rect(100, 320, 40, 40)  # le perso, ou plutôt sa "hitbox"
-sol_afficher_bool = False
 carte = cartes[0] #création de la carte avec la liste "cartes"
 portail = [] #création de la liste (vide) pour les portails
 eaux = [] #création de la liste (vide) pour l'eau
 murs =[] #création de la liste (vide) pour les murs
-decorations = [] #création de la liste (vide) pour les décorations
-vitesse = 3.5
+vitesse = 3.5 
 i_anim = 0 
 
-# Initialize a storage for the chosen textures for each tile
-chosen_textures = [[None for _ in range(20)] for _ in range(13)]
-
-# Initialize texture storage
-textures = {
-    1: [pg.transform.rotate(water_texture, angle) for angle in [-90, 90, 180]],
-    4: [pg.transform.rotate(pont_texture, angle) for angle in [90]],
-    'sols': [pg.transform.rotate(sols_textures, angle) for angle in [-90, 90, 180]]
-}
-
-# Populate the lists based on the map and store the chosen textures
+# Chargements des carrés de textures pour la carte
 for y in range(0, 13):
     for x in range(0, 20):
         if carte[y][x] == 1:
             eaux.append(pg.Rect(x * 40, y * 40, 40, 40))
-            chosen_textures[y][x] = random.choice(textures[1])
+            texture_choisi[y][x] = random.choice(textures[1])
         elif carte[y][x] == 2:
             murs.append(pg.Rect(x * 40, y * 40, 40, 40))
         elif carte[y][x] == 3:
             portail.append(pg.Rect(x * 40, y * 40, 40, 40))
         elif carte[y][x] == 4:
-            chosen_textures[y][x] = textures[4][0]
+            texture_choisi[y][x] = textures[4][0]
         else:
-            chosen_textures[y][x] = random.choice(textures['sols'])
+            texture_choisi[y][x] = random.choice(ground)
 
-# Add decorations to the list with their positions
-decorations.append((arbre1, (100, 100)))  # Example decoration
-decorations.append((arbre2, (100, 200)))  # Example decoration
-decorations.append((arbre3, (100, 300)))  # Example decoration
-decorations.append((arbre1, (200, 100)))  # Example decoration
+# Chargement des musiques
+pg.mixer.music.load('music/menu.mp3') 
+game_music = 'music/in_game.mp3' 
+pg.mixer.music.play(-1) 
 
-# Initialize vertical offset for water animation
-water_offset = 0
+# Affichage de l'écran de chargement
+loading_screen(fenetre, loading_image)
+# Affichage de l'écran d'accueil
+action = home_page(fenetre, start_button, credits_button)
 
-def affichage_sol():
-    global water_offset
-    # Clear the screen by filling it with a background color (e.g., black)
-    fenetre.fill((0, 0, 0))
+# Gérer les actions de l'écran d'accueil
+if action == 'quit':
+    pg.quit()
+    exit()
+
+elif action == 'start':
+    pg.mixer.music.fadeout(3000)  # Fade out the current music over 2 seconds
     
-    # Update the vertical offset for water animation
-    water_offset = (water_offset + 1) % 40  # Adjust the speed of the flow by changing the increment value
-    
-    # Draw the water elements first
-    for y in range(0, 13):
-        for x in range(0, 20):
-            if carte[y][x] == 1:
-                texture = chosen_textures[y][x]
-                fenetre.blit(texture, (x * 40, y * 40 + water_offset - 40))  # Apply the vertical offset
+    pg.mixer.music.load(game_music)  # Load the game music
+    pg.mixer.music.play(-1)  # Play the game music in a loop
 
-    # Draw the other elements on top of the water
-    for y in range(0, 13):
-        for x in range(0, 20):
-            if carte[y][x] == 2:
-                pg.draw.rect(fenetre, (255, 0, 0), (x * 40, y * 40, 40, 40), 0)
-            elif carte[y][x] == 3:
-                pg.draw.rect(fenetre, (255, 0, 255), (x * 40, y * 40, 40, 40), 0)
-            elif carte[y][x] == 4:
-                texture = chosen_textures[y][x]
-                fenetre.blit(texture, (x * 40, y * 40))
-            elif carte[y][x] == 0:
-                texture = chosen_textures[y][x]
-                fenetre.blit(texture, (x * 40, y * 40))
-
-    # Draw the decorations
-    for decoration in decorations:
-        texture, position = decoration
-        fenetre.blit(texture, position)
+    fade_out(fenetre, 2000)
 
 
 
@@ -131,21 +82,21 @@ def affichage_sol():
 
 droite = [] # création d'une liste (vide) pour l'animation de droite
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 690, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet.subsurface(x, 678, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     droite.append(image) #on ajoute les succession d'image dans une liste
 i_anim = 0 
 
 haut = [] # création d'une liste (vide) pour l'animation du haut
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 585, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet.subsurface(x, 573, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     haut.append(image)#on ajoute les succession d'image dans une liste
 i2_anim = 0
 
 bas = [] # création d'une liste (vide) pour l'animation du bas
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 400, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet.subsurface(x, 388, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     bas.append(image)#on ajoute les succession d'image dans une liste
 i3_anim = 0
@@ -153,7 +104,7 @@ i3_anim = 0
 
 gauche = [] # création d'une liste (vide) pour l'animation de gauche
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 490, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet.subsurface(x, 478, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     gauche.append(image)#on ajoute les succession d'image dans une liste
 i4_anim = 0
@@ -175,7 +126,7 @@ def collision_portail(): #création de la fonction de collision pour les portail
     return False
 
 
-#Boucle du jeu
+#Boucle du jeu 
 continuer = True
 
 while continuer:
@@ -195,8 +146,7 @@ while continuer:
     # par passage dans la boucle perpétuelle
 
 
-    affichage_sol()
-
+    affichage_sol(fenetre, carte, texture_choisi) #on appelle la fonction affichage_sol pour afficher la carte
 
     #collision avec les portails?
     if collision_portail():
@@ -234,13 +184,13 @@ while continuer:
     # Lire les entrées clavier
     dx = dy = 0  # Déplacement clavier par défaut
     if touches[K_d]:
-        dx += vitesse
+        dx += vitesse 
     if touches[K_q]:
-        dx -= vitesse
+        dx -= vitesse 
     if touches[K_z]:
-        dy -= vitesse
+        dy -= vitesse 
     if touches[K_s]:
-        dy += vitesse
+        dy += vitesse 
 
     # Combiner les entrées de la manette et du clavier
     final_dx = dx + joystick_dx
