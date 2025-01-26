@@ -2,6 +2,15 @@ import pygame as pg
 from textures import *
 from pygame.locals import * #pour les constantes comme QUIT ou K_LEFT
 import random
+
+#importer les cartes
+from cartes.carte1 import *
+from cartes.carte2 import *
+from cartes.carte3 import *
+from cartes.carte4 import *
+
+cartes = [carte1, carte2, carte3, carte4]
+
 def affichage_sol(fenetre, carte, chosen_textures):
     # Clear the screen by filling it with a background color (e.g., black)
     fenetre.fill((0, 0, 0))
@@ -31,9 +40,25 @@ def affichage_sol(fenetre, carte, chosen_textures):
                 fenetre.blit(texture, (x * 40, y * 40))
 
     # Draw the decorations
-    for decoration in decorations:
-        texture, position = decoration
-        fenetre.blit(texture, position)
+    if carte == cartes[0]:
+        for decoration in decorations1:
+            texture, position = decoration
+            fenetre.blit(texture, position)
+
+    if carte == cartes[1]:
+        for decoration in decorations2:
+            texture, position = decoration
+            fenetre.blit(texture, position)
+
+    if carte == cartes[2]:
+        for decoration in decorations3:
+            texture, position = decoration
+            fenetre.blit(texture, position)
+        
+    if carte == cartes[3]:
+        for decoration in decorations4:
+            texture, position = decoration
+            fenetre.blit(texture, position)
 
 def loading_screen(fenetre, loading_image):
     loading_image = pg.transform.scale(loading_image, (656, 102))
@@ -48,7 +73,7 @@ def loading_screen(fenetre, loading_image):
         fenetre.blit(credits_button, (10, 10))
         fenetre.blit(loading_image, (72, 120))
         pg.display.flip()
-        alpha += 1  # Increase the alpha value to create the fade-in effect
+        alpha += 1.5  # Increase the alpha value to create the fade-in effect
         pg.time.delay(30)  # Adjust the delay to control the speed of the fade-in   
     pg.time.wait(1000)  # Display the loading screen for 2 seconds
 

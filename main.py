@@ -1,10 +1,15 @@
-import pygame as pg #pour simplifier l'écriture = pg -long que pygame
+import pygame as pg 
 from pygame.locals import * #pour les constantes comme QUIT ou K_LEFT
 import random
 from textures import *
-from cartes import cartes #pour appeller toutes les cartes on créé notre propre bibliothèque
 from affichage import *
 import os
+
+#importer les 4 cartes
+from cartes.carte1 import *
+from cartes.carte2 import *
+from cartes.carte3 import *
+from cartes.carte4 import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -24,18 +29,22 @@ else:
 
 LARGEUR, HAUTEUR = 800, 480 #Dimensions
 fenetre = pg.display.set_mode((LARGEUR, HAUTEUR)) # fenêtre d'affichage de dimension LARGEUR, HAUTEUR
-pg.display.set_caption("Zelda")#nom de la fenetre
+pg.display.set_caption("ECHOES OF THE SHADOWS")#nom de la fenetre
 horloge = pg.time.Clock() #pour simplifier plus tard pour la commande des images par seconde
 
+#changer le logo de la fenetre
+icone = pg.image.load('textures/objects/locked_chest.png')
+pg.display.set_icon(icone)
 
 # Parametres du jeu
 
+cartes = [carte1, carte2, carte3, carte4]
 perso = pg.Rect(100, 320, 40, 40)  # le perso, ou plutôt sa "hitbox"
 carte = cartes[0] #création de la carte avec la liste "cartes"
 portail = [] #création de la liste (vide) pour les portails
 eaux = [] #création de la liste (vide) pour l'eau
 murs =[] #création de la liste (vide) pour les murs
-vitesse = 3.5 
+vitesse = 2.2
 i_anim = 0 
 
 # Chargements des carrés de textures pour la carte
@@ -142,15 +151,13 @@ while continuer:
 
     fenetre.blit(image, perso)# affiche l'image et le perso sur la fenetre
     pg.display.flip()
-    # on bascule l'affichage, une seule fois
-    # par passage dans la boucle perpétuelle
 
 
     affichage_sol(fenetre, carte, texture_choisi) #on appelle la fonction affichage_sol pour afficher la carte
 
     #collision avec les portails?
     if collision_portail():
-        carte = cartes[1] #on change de carte
+        pass
 
     #Je parcours tous les événements
     for e in pg.event.get():
@@ -200,9 +207,27 @@ while continuer:
     if final_dx != 0:
         perso.x += final_dx
         if perso.left >= LARGEUR:  # Dépasse les limites de la carte ?
-            perso.right = 0  # Revenir à gauche
+            if carte == cartes[0]:
+                carte = cartes[1]
+                perso.right = 0
+            elif carte == cartes[1]:
+                perso.x -= final_dx
+            elif carte == cartes[2]:
+                carte = cartes[3]
+                perso.right = 0
+            elif carte == cartes[3]:
+                perso.x -= final_dx
         elif perso.right <= 0:  # Dépasse par la gauche ?
-            perso.left = LARGEUR  # Revenir à droite
+            if carte == cartes[0]:
+                perso.x -= final_dx
+            elif carte == cartes[1]:
+                carte = cartes[0]
+                perso.left = LARGEUR
+            elif carte == cartes[2]:
+                perso.x -= final_dx
+            elif carte == cartes[3]:
+                carte = cartes[2]
+                perso.left = LARGEUR
         for eau in eaux:
             if perso.colliderect(eau):  # Collision avec un mur
                 perso.x -= final_dx  # Annuler le déplacement
@@ -218,14 +243,31 @@ while continuer:
             if i4_anim >= len(gauche):
                 i4_anim = 0
             image = gauche[i4_anim]
-
     # Appliquer les déplacements verticaux
     if final_dy != 0:
         perso.y += final_dy
         if perso.top >= HAUTEUR:  # Dépasse les limites de la carte ?
-            perso.bottom = 0  # Revenir en haut
+            if carte == cartes[0]:
+                perso.y -= final_dy
+            elif carte == cartes[1]:
+                perso.y -= final_dy
+            elif carte == cartes[2]:
+                carte = cartes[0]
+                perso.bottom = 0
+            elif carte == cartes[3]:
+                carte = cartes[1]
+                perso.bottom = 0
         elif perso.bottom <= 0:  # Dépasse par le haut ?
-            perso.top = HAUTEUR  # Revenir en bas
+            if carte == cartes[0]:
+                carte = cartes[2]
+                perso.bottom = HAUTEUR
+            elif carte == cartes[1]:
+                carte = cartes[3]
+                perso.bottom = HAUTEUR
+            elif carte == cartes[2]:
+                perso.y -= final_dy
+            elif carte == cartes[3]:
+                perso.y -= final_dy
         for eau in eaux:
             if perso.colliderect(eau):  # Collision avec un mur
                 perso.y -= final_dy  # Annuler le déplacement
