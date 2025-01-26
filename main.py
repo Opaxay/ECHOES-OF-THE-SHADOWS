@@ -6,10 +6,12 @@ from affichage import *
 import os
 
 #importer les 4 cartes
-from cartes.carte1 import *
-from cartes.carte2 import *
-from cartes.carte3 import *
-from cartes.carte4 import *
+from cartes.carte1 import carte1, texture_choisi_carte1, eaux1
+from cartes.carte2 import carte2, texture_choisi_carte2, eaux2
+from cartes.carte3 import carte3, texture_choisi_carte3, eaux3
+from cartes.carte4 import carte4, texture_choisi_carte4, eaux4
+
+eaux = [eaux1, eaux2, eaux3, eaux4]
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -41,31 +43,29 @@ pg.display.set_icon(icone)
 cartes = [carte1, carte2, carte3, carte4]
 perso = pg.Rect(100, 320, 40, 40)  # le perso, ou plutôt sa "hitbox"
 carte = cartes[0] #création de la carte avec la liste "cartes"
-portail = [] #création de la liste (vide) pour les portails
-eaux = [] #création de la liste (vide) pour l'eau
-murs =[] #création de la liste (vide) pour les murs
 vitesse = 2.2
 i_anim = 0 
+portail = [] #création de la liste (vide) pour les portails
+murs =[] #création de la liste (vide) pour les murs
 
-# Chargements des carrés de textures pour la carte
-for y in range(0, 13):
-    for x in range(0, 20):
-        if carte[y][x] == 1:
-            eaux.append(pg.Rect(x * 40, y * 40, 40, 40))
-            texture_choisi[y][x] = random.choice(textures[1])
-        elif carte[y][x] == 2:
-            murs.append(pg.Rect(x * 40, y * 40, 40, 40))
-        elif carte[y][x] == 3:
-            portail.append(pg.Rect(x * 40, y * 40, 40, 40))
-        elif carte[y][x] == 4:
-            texture_choisi[y][x] = textures[4][0]
-        else:
-            texture_choisi[y][x] = random.choice(ground)
-
-# Chargement des musiques
-pg.mixer.music.load('music/menu.mp3') 
-game_music = 'music/in_game.mp3' 
+# Chargement des musiques et des sounds effects
+pg.mixer.music.load('sounds/music/menu.mp3') 
+game_music = 'sounds/music/in_game.mp3' 
 pg.mixer.music.play(-1) 
+footstep_sounds = [
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 1.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 2.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 3.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 4.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 5.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 6.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 7.wav'),
+    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 8.wav'),
+]
+
+for sound in footstep_sounds:
+    sound.set_volume(0.15)
+
 
 # Affichage de l'écran de chargement
 loading_screen(fenetre, loading_image)
@@ -86,38 +86,7 @@ elif action == 'start':
     fade_out(fenetre, 2000)
 
 
-
-# POUR L'ANIMATION DU PERSO
-
-droite = [] # création d'une liste (vide) pour l'animation de droite
-for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 678, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
-    image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
-    droite.append(image) #on ajoute les succession d'image dans une liste
-i_anim = 0 
-
-haut = [] # création d'une liste (vide) pour l'animation du haut
-for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 573, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
-    image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
-    haut.append(image)#on ajoute les succession d'image dans une liste
-i2_anim = 0
-
-bas = [] # création d'une liste (vide) pour l'animation du bas
-for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 388, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
-    image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
-    bas.append(image)#on ajoute les succession d'image dans une liste
-i3_anim = 0
-
-
-gauche = [] # création d'une liste (vide) pour l'animation de gauche
-for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 478, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
-    image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
-    gauche.append(image)#on ajoute les succession d'image dans une liste
-i4_anim = 0
-    
+   
 
 #Gérer les Collisions
 
@@ -152,8 +121,15 @@ while continuer:
     fenetre.blit(image, perso)# affiche l'image et le perso sur la fenetre
     pg.display.flip()
 
-
-    affichage_sol(fenetre, carte, texture_choisi) #on appelle la fonction affichage_sol pour afficher la carte
+    if carte == cartes[0]: # Si on est sur la carte 1
+        affichage_sol(fenetre, carte, texture_choisi_carte1) #on appelle la fonction affichage_sol pour afficher la carte
+    elif carte == cartes[1]: # Si on est sur la carte 2
+        affichage_sol(fenetre, carte, texture_choisi_carte2) #on appelle la fonction affichage_sol pour afficher la carte
+    elif carte == cartes[2]: # Si on est sur la carte 3
+        affichage_sol(fenetre, carte, texture_choisi_carte3) #on appelle la fonction affichage_sol pour afficher la carte
+    elif carte == cartes[3]: # Si on est sur la carte 4
+        affichage_sol(fenetre, carte, texture_choisi_carte4) #on appelle la fonction affichage_sol pour afficher la carte
+    
 
     #collision avec les portails?
     if collision_portail():
@@ -206,31 +182,45 @@ while continuer:
     # Appliquer les déplacements horizontaux
     if final_dx != 0:
         perso.x += final_dx
-        if perso.left >= LARGEUR:  # Dépasse les limites de la carte ?
-            if carte == cartes[0]:
+        if perso.left >= LARGEUR:  # Dépasse a droite ? (teleportation)
+            if carte == cartes[0]: # Si on est sur la carte 1
                 carte = cartes[1]
                 perso.right = 0
-            elif carte == cartes[1]:
-                perso.x -= final_dx
-            elif carte == cartes[2]:
+            elif carte == cartes[2]: # Si on est sur la carte 3
                 carte = cartes[3]
                 perso.right = 0
-            elif carte == cartes[3]:
+        
+        elif perso.left >= LARGEUR - 40: # Dépasse par la droite ? (collision)
+            if carte == cartes[1]: # Si on est sur la carte 2
                 perso.x -= final_dx
-        elif perso.right <= 0:  # Dépasse par la gauche ?
-            if carte == cartes[0]:
+            elif carte == cartes[3]: # Si on est sur la carte 4
                 perso.x -= final_dx
-            elif carte == cartes[1]:
+        
+
+        elif perso.right <= 0:  # Dépasse par la gauche ? (teleportation)
+            if carte == cartes[1]: # Si on est sur la carte 2
                 carte = cartes[0]
                 perso.left = LARGEUR
-            elif carte == cartes[2]:
-                perso.x -= final_dx
-            elif carte == cartes[3]:
+            elif carte == cartes[3]: # Si on est sur la carte 4
                 carte = cartes[2]
                 perso.left = LARGEUR
-        for eau in eaux:
-            if perso.colliderect(eau):  # Collision avec un mur
-                perso.x -= final_dx  # Annuler le déplacement
+        
+        elif perso.right <= 40:  # Dépasse par la gauche ? (collision)
+            if carte == cartes[0]: # Si on est sur la carte 1
+                perso.x -= final_dx
+            elif carte == cartes[2]: # Si on est sur la carte 3
+                perso.x -= final_dx
+        try:
+            if carte[perso.y // 40][perso.x // 40] == 0:
+                random.choice(footstep_sounds).play()
+        except IndexError:
+            'Coordonnées erronées'
+        
+        for eau in eaux[cartes.index(carte)]:
+            if perso.colliderect(eau):  # Collision avec l'eau
+                perso.x -= final_dx
+
+
 
         # Animation en fonction de la direction
         if final_dx > 0:  # Droite
@@ -246,31 +236,46 @@ while continuer:
     # Appliquer les déplacements verticaux
     if final_dy != 0:
         perso.y += final_dy
-        if perso.top >= HAUTEUR:  # Dépasse les limites de la carte ?
-            if carte == cartes[0]:
-                perso.y -= final_dy
-            elif carte == cartes[1]:
-                perso.y -= final_dy
-            elif carte == cartes[2]:
+        if perso.top >= HAUTEUR:  # Dépasse par le bas ? (teleportation)
+            if carte == cartes[2]: # Si on est sur la carte 3
                 carte = cartes[0]
                 perso.bottom = 0
-            elif carte == cartes[3]:
+            elif carte == cartes[3]: # Si on est sur la carte 4
                 carte = cartes[1]
                 perso.bottom = 0
+
+        elif perso.top >= HAUTEUR - 40:  # Dépasse par le bas ?
+            if carte == cartes[0]: # Si on est sur la carte 1
+                perso.y -= final_dy
+            elif carte == cartes[1]: # Si on est sur la carte 2
+                perso.y -= final_dy
+            
+            
         elif perso.bottom <= 0:  # Dépasse par le haut ?
-            if carte == cartes[0]:
+            if carte == cartes[0]: # Si on est sur la carte 1
                 carte = cartes[2]
                 perso.bottom = HAUTEUR
-            elif carte == cartes[1]:
+            elif carte == cartes[1]: # Si on est sur la carte 2
                 carte = cartes[3]
                 perso.bottom = HAUTEUR
-            elif carte == cartes[2]:
+
+        elif perso.bottom <= 40:  # Dépasse par bas ?
+            if carte == cartes[2]: # Si on est sur la carte 3
                 perso.y -= final_dy
-            elif carte == cartes[3]:
+            elif carte == cartes[3]: # Si on est sur la carte 4
                 perso.y -= final_dy
-        for eau in eaux:
-            if perso.colliderect(eau):  # Collision avec un mur
-                perso.y -= final_dy  # Annuler le déplacement
+
+        try:
+            if carte[perso.y // 40][perso.x // 40] == 0:
+                random.choice(footstep_sounds).play()
+        except IndexError:
+            'Coordonnées erronées'
+
+        #changer la liste d'eaux en fonction de la carte
+        
+        for eau in eaux[cartes.index(carte)]:
+            if perso.colliderect(eau):  # Collision avec l'eau
+                perso.y -= final_dy
 
         # Animation en fonction de la direction
         if final_dy < 0:  # Haut
