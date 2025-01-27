@@ -17,14 +17,44 @@ for i in range(1, 5):
     
 
 
-pont_texture = pg.image.load('textures/ground/bridge_texture.png').convert_alpha()
-pont_texture = pg.transform.scale(pont_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
 water_texture = pg.image.load('textures/ground/water.png').convert_alpha()
 water_texture = pg.transform.scale(water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
 g_water_texture = pg.image.load('textures/ground/bordure_gauche.png').convert_alpha()
 d_water_texture = pg.image.load('textures/ground/bordure_droite.png').convert_alpha()
 g_water_texture = pg.transform.scale(g_water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
 d_water_texture = pg.transform.scale(d_water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
+corner1 = pg.image.load('textures/ground/corner1.png').convert_alpha()
+corner1 = pg.transform.scale(corner1, (40, 40))
+corner2 = pg.image.load('textures/ground/corner2.png').convert_alpha()
+corner2 = pg.transform.scale(corner2, (40, 40))
+corner3 = pg.image.load('textures/ground/corner3.png').convert_alpha()
+corner3 = pg.transform.scale(corner3, (40, 40))
+corner4 = pg.image.load('textures/ground/corner4.png').convert_alpha()
+corner4 = pg.transform.scale(corner4, (40, 40))
+reversec1 = pg.image.load('textures/ground/reversec1.png').convert_alpha()
+reversec1 = pg.transform.scale(reversec1, (40, 40))
+reversec2 = pg.image.load('textures/ground/reversec2.png').convert_alpha()
+reversec2 = pg.transform.scale(reversec2, (40, 40))
+reversec3 = pg.image.load('textures/ground/reversec3.png').convert_alpha()
+reversec3 = pg.transform.scale(reversec3, (40, 40))
+reversec4 = pg.image.load('textures/ground/reversec4.png').convert_alpha()
+reversec4 = pg.transform.scale(reversec4, (40, 40))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 arbre1 = pg.image.load('textures/Tree/Tree-1-4.png')  # Load the decoration texture
 arbre1 = pg.transform.scale(arbre1, (60, 80))  # Resize the decoration texture
 arbre2 = pg.image.load('textures/Tree/Tree-1-2.png')  # Load the decoration texture

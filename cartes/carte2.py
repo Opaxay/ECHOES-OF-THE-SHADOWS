@@ -5,7 +5,7 @@ import random
 portail = [] #création de la liste (vide) pour les portails
 eaux2 = [] #création de la liste (vide) pour l'eau
 murs =[] #création de la liste (vide) pour les murs
-
+decoration_rects2 = []
 carte2 = [[1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

@@ -4,7 +4,8 @@ import random
 from textures import *
 from affichage import *
 import os
-
+from settings import * 
+from sound import * 
 #importer les 4 cartes
 from cartes.carte1 import carte1, texture_choisi_carte1, eaux1
 from cartes.carte2 import carte2, texture_choisi_carte2, eaux2
@@ -12,8 +13,6 @@ from cartes.carte3 import carte3, texture_choisi_carte3, eaux3
 from cartes.carte4 import carte4, texture_choisi_carte4, eaux4
 
 eaux = [eaux1, eaux2, eaux3, eaux4]
-
-os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 pg.init()
 pg.mixer.init()
@@ -27,45 +26,8 @@ if pg.joystick.get_count() > 0:
 else:
     print("Aucune manette détectée.")
 
-# Parametres de la fenetre
-
-LARGEUR, HAUTEUR = 800, 480 #Dimensions
-fenetre = pg.display.set_mode((LARGEUR, HAUTEUR)) # fenêtre d'affichage de dimension LARGEUR, HAUTEUR
-pg.display.set_caption("ECHOES OF THE SHADOWS")#nom de la fenetre
-horloge = pg.time.Clock() #pour simplifier plus tard pour la commande des images par seconde
-
-#changer le logo de la fenetre
-icone = pg.image.load('textures/objects/locked_chest.png')
-pg.display.set_icon(icone)
-
-# Parametres du jeu
-
 cartes = [carte1, carte2, carte3, carte4]
-perso = pg.Rect(100, 320, 40, 40)  # le perso, ou plutôt sa "hitbox"
-carte = cartes[0] #création de la carte avec la liste "cartes"
-vitesse = 2.2
-i_anim = 0 
-portail = [] #création de la liste (vide) pour les portails
-murs =[] #création de la liste (vide) pour les murs
-
-# Chargement des musiques et des sounds effects
-pg.mixer.music.load('sounds/music/menu.mp3') 
-game_music = 'sounds/music/in_game.mp3' 
-pg.mixer.music.play(-1) 
-footstep_sounds = [
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 1.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 2.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 3.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 4.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 5.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 6.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 7.wav'),
-    pg.mixer.Sound('sounds\effects\grasswalk\GRASS - Walk 8.wav'),
-]
-
-for sound in footstep_sounds:
-    sound.set_volume(0.15)
-
+carte = cartes[0] 
 
 # Affichage de l'écran de chargement
 loading_screen(fenetre, loading_image)
@@ -85,10 +47,6 @@ elif action == 'start':
 
     fade_out(fenetre, 2000)
 
-
-   
-
-#Gérer les Collisions
 
 #collision eau?
 def collision_eau():#création de la fonction de collision pour l'eau
@@ -219,9 +177,7 @@ while continuer:
         for eau in eaux[cartes.index(carte)]:
             if perso.colliderect(eau):  # Collision avec l'eau
                 perso.x -= final_dx
-
-
-
+                
         # Animation en fonction de la direction
         if final_dx > 0:  # Droite
             i_anim += 1
@@ -233,6 +189,7 @@ while continuer:
             if i4_anim >= len(gauche):
                 i4_anim = 0
             image = gauche[i4_anim]
+        
     # Appliquer les déplacements verticaux
     if final_dy != 0:
         perso.y += final_dy

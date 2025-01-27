@@ -11,6 +11,7 @@ from cartes.carte4 import *
 
 cartes = [carte1, carte2, carte3, carte4]
 
+
 def affichage_sol(fenetre, carte, chosen_textures):
     # Clear the screen by filling it with a background color (e.g., black)
     fenetre.fill((0, 0, 0))
@@ -38,6 +39,57 @@ def affichage_sol(fenetre, carte, chosen_textures):
                 random_texture = random.choice(ground)
                 texture = chosen_textures[y][x]
                 fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 10:
+                texture = d_water_texture
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 11:
+                texture = g_water_texture
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 12:
+                texture = corner1
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 13:
+                texture = corner2
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 14:
+                texture = corner3
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 15:
+                texture = corner4
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 20:
+                texture = reversec1
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 21:
+                texture = reversec2
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 22:
+                texture = reversec3
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 23:
+                texture = reversec4
+                fenetre.blit(texture, (x * 40, y * 40))
+                
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # Draw the decorations
     if carte == cartes[0]:
@@ -61,6 +113,7 @@ def affichage_sol(fenetre, carte, chosen_textures):
             fenetre.blit(texture, position)
 
 def loading_screen(fenetre, loading_image):
+
     loading_image = pg.transform.scale(loading_image, (656, 102))
     fenetre.blit(loading_image, (72, 120))
     fenetre.blit(credits_button, (10, 10))
@@ -92,6 +145,8 @@ def home_page(fenetre, start_button, credits_button):
                 if credits_button.get_rect(topleft=(10, 10)).collidepoint(mouse_pos):
                     print("\n\n Chef de projet: Tom \n Developer :  Tom, Théo \n Music: Thomas Brunet \n Textures: Itch.io")
             elif event.type == JOYBUTTONDOWN:
+                return 'start'
+            elif event.type == MOUSEMOTION:
                 return 'start'
             
         pg.time.Clock().tick(30)
