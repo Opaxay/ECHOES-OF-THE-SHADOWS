@@ -12,6 +12,9 @@ from cartes.carte2 import carte2, texture_choisi_carte2, eaux2
 from cartes.carte3 import carte3, texture_choisi_carte3, eaux3
 from cartes.carte4 import carte4, texture_choisi_carte4, eaux4
 
+PLAYER_MODE = True #Desactivé il enleve toute l'animation au debut pour pouvoir relacer le jeu plus rapidement quand on est entrain de developper 
+
+
 eaux = [eaux1, eaux2, eaux3, eaux4]
 
 pg.init()
@@ -29,23 +32,24 @@ else:
 cartes = [carte1, carte2, carte3, carte4]
 carte = cartes[0] 
 
-# Affichage de l'écran de chargement
-loading_screen(fenetre, loading_image)
-# Affichage de l'écran d'accueil
-action = home_page(fenetre, start_button, credits_button)
+if PLAYER_MODE:
+    # Affichage de l'écran de chargement
+    loading_screen(fenetre, loading_image)
+    # Affichage de l'écran d'accueil
+    action = home_page(fenetre, start_button, credits_button)
 
-# Gérer les actions de l'écran d'accueil
-if action == 'quit':
-    pg.quit()
-    exit()
+    # Gérer les actions de l'écran d'accueil
+    if action == 'quit':
+        pg.quit()
+        exit()
 
-elif action == 'start':
-    pg.mixer.music.fadeout(3000)  # Fade out the current music over 2 seconds
-    
-    pg.mixer.music.load(game_music)  # Load the game music
-    pg.mixer.music.play(-1)  # Play the game music in a loop
+    elif action == 'start':
+        pg.mixer.music.fadeout(3000)  # Fade out the current music over 2 seconds
+        
+        pg.mixer.music.load(game_music)  # Load the game music
+        pg.mixer.music.play(-1)  # Play the game music in a loop
 
-    fade_out(fenetre, 2000)
+        fade_out(fenetre, 2000)
 
 
 #collision eau?

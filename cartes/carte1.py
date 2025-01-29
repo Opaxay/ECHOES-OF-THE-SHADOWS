@@ -7,12 +7,12 @@ murs =[] #création de la liste (vide) pour les murs
 bordure = []
 decoration_rects1 = []
 
-carte1 = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,1, 1, 1, 1, 1],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 4, 4, 0, 0, 0, 1, 1],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 4, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20, 11, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 11, 0, 0, 0, 0, 0, 0],
+carte1 = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 1, 1, 1, 1, 1],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20, 22, 16, 16, 16, 23, 1],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 11, 0, 0, 0, 13, 16],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 11, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20, 1, 11, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 22,  14, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 11, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 11, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 1, 11, 0, 0, 0, 0, 0, 0],
@@ -25,20 +25,13 @@ carte1 = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
 
 decorations1 = []
 
-for i in range(4):
-    decorations1.append((fleur, (random.randint(0, 420), random.randint(80, 600))))
-    
-for i in range(3):
-    decorations1.append((pierre2, (random.randint(0, 420), random.randint(80, 600))))
-
-for i in range(9):
-    decorations1.append((herbe1, (random.randint(0, 420), random.randint(80, 600))))
-
-for i in range(9):
-    decorations1.append((herbe2, (random.randint(0, 420), random.randint(80, 600))))
-                       
-for i in range(3):
-    decorations1.append((buisson1, (random.randint(0, 420), random.randint(80, 600))))
+decorations1.append((fleur, (400, 200)))
+decorations1.append((fleur, (200, 190)))
+decorations1.append((fleur, (220, 170)))
+decorations1.append((fleur, (230, 195)))
+decorations1.append((fleur, (190, 400)))
+decorations1.append((fleur, (340, 420)))
+decorations1.append((fleur, (320, 50)))
 
 decorations1.append((arbre1, (0, -30)))
 decorations1.append((arbre1, (30, -30)))
@@ -75,9 +68,8 @@ decorations1.append((arbre_coupe, (215, 50)))
 decorations1.append((arbre_coupe, (250, 70)))
 decorations1.append((arbre_coupe, (220, 80)))
 
-decorations1.append((arbre2, (145, 160))) 
-
 decorations1.append((pierre1, (379, 234))) 
+decorations1.append((pierre1, (100, 350)))
 
 decorations1.append((buisson2, (105, 113)))
 decorations1.append((buisson1, (139, 117))) 
@@ -114,5 +106,3 @@ for y in range(0, 13):
         elif carte1[y][x] == 11:
             eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
             texture_choisi_carte1[y][x] = d_water_texture 
-
-            

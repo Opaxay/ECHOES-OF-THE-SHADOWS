@@ -5,6 +5,11 @@ pg.init()
 pg.display.set_mode((1, 1))
 
 spritesheet = pg.image.load('textures/Zelda/Zelda_animation.png').convert_alpha()
+spritesheet_haut = pg.image.load('textures/Zelda/Zelda_animation_haut.png').convert_alpha()
+spritesheet_bas = pg.image.load('textures/Zelda/Zelda_animation_bas.png').convert_alpha()
+spritesheet_droite = pg.image.load('textures/Zelda/Zelda_animation_droite.png').convert_alpha()
+spritesheet_gauche = pg.image.load('textures/Zelda/Zelda_animation_gauche.png').convert_alpha()
+
 ground = []
 ground1 = pg.image.load('textures/ground/ground1.png').convert_alpha()
 ground2 = pg.image.load('textures/ground/ground2.png').convert_alpha()
@@ -22,7 +27,11 @@ water_texture = pg.transform.scale(water_texture, (40, 40))  # Remplacez (40, 40
 g_water_texture = pg.image.load('textures/ground/bordure_gauche.png').convert_alpha()
 d_water_texture = pg.image.load('textures/ground/bordure_droite.png').convert_alpha()
 g_water_texture = pg.transform.scale(g_water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
-d_water_texture = pg.transform.scale(d_water_texture, (40, 40))  # Remplacez (40, 40) par la taille de votre rectangle
+d_water_texture = pg.transform.scale(d_water_texture, (40, 40))
+edge_top = pg.image.load('textures/ground/bordure_haut.png')
+edge_bottom = pg.image.load('textures/ground/bordure_bas.png')
+edge_top = pg.transform.scale(edge_top, (40, 40))  
+edge_bottom = pg.transform.scale(edge_bottom, (40, 40)) 
 corner1 = pg.image.load('textures/ground/corner1.png').convert_alpha()
 corner1 = pg.transform.scale(corner1, (40, 40))
 corner2 = pg.image.load('textures/ground/corner2.png').convert_alpha()

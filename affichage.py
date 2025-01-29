@@ -57,6 +57,12 @@ def affichage_sol(fenetre, carte, chosen_textures):
             elif carte[y][x] == 15:
                 texture = corner4
                 fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 16:
+                texture = edge_bottom
+                fenetre.blit(texture, (x * 40, y * 40))
+            elif carte[y][x] == 17:
+                texture = edge_top
+                fenetre.blit(texture, (x * 40, y * 40))
             elif carte[y][x] == 20:
                 texture = reversec1
                 fenetre.blit(texture, (x * 40, y * 40))
