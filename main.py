@@ -44,12 +44,15 @@ if PLAYER_MODE:
         exit()
 
     elif action == 'start':
-        pg.mixer.music.fadeout(3000)  # Fade out the current music over 2 seconds
+        start_button.fill((0, 0, 0, 0))
+        pg.mixer.music.fadeout(3000)
+        fade_out(fenetre, 1)
+        
         
         pg.mixer.music.load(game_music)  # Load the game music
         pg.mixer.music.play(-1)  # Play the game music in a loop
 
-        fade_out(fenetre, 2000)
+        
 
 
 #collision eau?
@@ -72,16 +75,12 @@ continuer = True
 while continuer:
     horloge.tick(60)
     
-
     # Dessine le personnage
     fenetre.blit(image, perso)
 
     # Met à jour l'affichage
     pg.display.flip()
 
-
-    fenetre.blit(image, perso)# affiche l'image et le perso sur la fenetre
-    pg.display.flip()
 
     if carte == cartes[0]: # Si on est sur la carte 1
         affichage_sol(fenetre, carte, texture_choisi_carte1) #on appelle la fonction affichage_sol pour afficher la carte

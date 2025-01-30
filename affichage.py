@@ -161,7 +161,7 @@ black_surface = pg.Surface((800, 400))
 black_surface.fill((0, 0, 0))
 
 def fade_out(fenetre, fade_out_duration):
-    for alpha in range(0, 256, int(255 / (fade_out_duration / 10))):
+    for alpha in range(0, 256, fade_out_duration):
         black_surface.set_alpha(alpha)
         fenetre.blit(black_surface, (0, 0))
         pg.display.flip()
@@ -169,7 +169,7 @@ def fade_out(fenetre, fade_out_duration):
 
 
 def fade_in(fenetre, fade_in_duration):
-    for alpha in range(255, -1, -int(255 / (fade_in_duration / 10))):
+    for alpha in range(255, -1, -fade_in_duration):
         black_surface.set_alpha(alpha)
         fenetre.blit(black_surface, (0, 0))
         pg.display.flip()

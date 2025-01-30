@@ -4,7 +4,6 @@ pg.init()
 
 pg.display.set_mode((1, 1))
 
-spritesheet = pg.image.load('textures/Zelda/Zelda_animation.png').convert_alpha()
 spritesheet_haut = pg.image.load('textures/Zelda/Zelda_animation_haut.png').convert_alpha()
 spritesheet_bas = pg.image.load('textures/Zelda/Zelda_animation_bas.png').convert_alpha()
 spritesheet_droite = pg.image.load('textures/Zelda/Zelda_animation_droite.png').convert_alpha()
@@ -129,33 +128,31 @@ textures_4 = {
 }
 
 
+bas = [] # création d'une liste (vide) pour l'animation du bas
+for x in range(0, 900, 90):#on parcour l'image de 90 en 90
+    image = spritesheet_bas.subsurface(x, 0, 90, 93)# création de la variable image pour qu'elle soit un surface modifiable
+    image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
+    bas.append(image)#on ajoute les succession d'image dans une liste
+i3_anim = 0
 
 # Animation du personnage
 droite = [] # création d'une liste (vide) pour l'animation de droite
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 678, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet_droite.subsurface(x, 0, 90, 93)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     droite.append(image) #on ajoute les succession d'image dans une liste
 i_anim = 0 
 
 haut = [] # création d'une liste (vide) pour l'animation du haut
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 573, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet_haut.subsurface(x, 0, 90, 93)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     haut.append(image)#on ajoute les succession d'image dans une liste
 i2_anim = 0
 
-bas = [] # création d'une liste (vide) pour l'animation du bas
-for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 388, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
-    image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
-    bas.append(image)#on ajoute les succession d'image dans une liste
-i3_anim = 0
-
-
 gauche = [] # création d'une liste (vide) pour l'animation de gauche
 for x in range(0, 900, 90):#on parcour l'image de 90 en 90
-    image = spritesheet.subsurface(x, 478, 90, 90)# création de la variable image pour qu'elle soit un surface modifiable
+    image = spritesheet_gauche.subsurface(x, 0, 90, 93)# création de la variable image pour qu'elle soit un surface modifiable
     image = pg.transform.scale(image, (40, 40))# transforme l'image pour que sur la fenetre elle soit en 40*40 
     gauche.append(image)#on ajoute les succession d'image dans une liste
 i4_anim = 0

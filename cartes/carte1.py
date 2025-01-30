@@ -105,4 +105,34 @@ for y in range(0, 13):
             texture_choisi_carte1[y][x] = g_water_texture
         elif carte1[y][x] == 11:
             eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture
+        elif carte1[y][x] == 12:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 13:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 14:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 15:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 16:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 17:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 20:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 21:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 22:
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
+            texture_choisi_carte1[y][x] = d_water_texture 
+        elif carte1[y][x] == 23 :
+            eaux1.append(pg.Rect(x * 40, y * 40, 40, 40))
             texture_choisi_carte1[y][x] = d_water_texture 
