@@ -81,7 +81,6 @@ while continuer:
     # Met à jour l'affichage
     pg.display.flip()
 
-
     if carte == cartes[0]: # Si on est sur la carte 1
         affichage_sol(fenetre, carte, texture_choisi_carte1) #on appelle la fonction affichage_sol pour afficher la carte
     elif carte == cartes[1]: # Si on est sur la carte 2
@@ -105,25 +104,27 @@ while continuer:
     if touches[K_ESCAPE]:
         print("touche Escape, on sort") #quitter le jeu
         continuer = False
+    try:
+            # Gestion des entrées clavier, souris et manette
+        if joystick:  # Vérifier si une manette est connectée
+            # Lire les axes de la manette (valeurs entre -1.0 et 1.0)
+            x_axis = joystick.get_axis(0)  # Axe horizontal (gauche-droite)
+            y_axis = joystick.get_axis(1)  # Axe vertical (haut-bas)
 
-        # Gestion des entrées clavier, souris et manette
-    if joystick:  # Vérifier si une manette est connectée
-        # Lire les axes de la manette (valeurs entre -1.0 et 1.0)
-        x_axis = joystick.get_axis(0)  # Axe horizontal (gauche-droite)
-        y_axis = joystick.get_axis(1)  # Axe vertical (haut-bas)
+            # Seuil pour éviter les petites variations (zone morte)
+            dead_zone = 0.1
+            if abs(x_axis) < dead_zone:
+                x_axis = 0
+            if abs(y_axis) < dead_zone:
+                y_axis = 0
 
-        # Seuil pour éviter les petites variations (zone morte)
-        dead_zone = 0.1
-        if abs(x_axis) < dead_zone:
-            x_axis = 0
-        if abs(y_axis) < dead_zone:
-            y_axis = 0
-
-        # Convertir les axes en déplacement
-        joystick_dx = int(x_axis * vitesse)
-        joystick_dy = int(y_axis * vitesse)
-    else:
-        joystick_dx = joystick_dy = 0  # Pas de manette
+            # Convertir les axes en déplacement
+            joystick_dx = int(x_axis * vitesse)
+            joystick_dy = int(y_axis * vitesse)
+        else:
+            joystick_dx = joystick_dy = 0  # Pas de manette
+    except:
+        pass
 
     # Lire les entrées clavier
     dx = dy = 0  # Déplacement clavier par défaut
@@ -137,8 +138,13 @@ while continuer:
         dy += vitesse 
 
     # Combiner les entrées de la manette et du clavier
-    final_dx = dx + joystick_dx
-    final_dy = dy + joystick_dy
+    try: 
+        final_dx = dx + joystick_dx
+        final_dy = dy + joystick_dy
+    except:
+        final_dx = dx
+        final_dy = dy
+
 
     # Appliquer les déplacements horizontaux
     if final_dx != 0:
