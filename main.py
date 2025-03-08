@@ -44,7 +44,7 @@ def relancer_jeu():
     perso = pg.Rect(170, 220, 40, 40)
     CLE_TROUVER = False
     LIMIT_CARTE = 155
-    timer = tick * 10
+    timer = tick * 60
 
     cle = []
     coffre1 = []
