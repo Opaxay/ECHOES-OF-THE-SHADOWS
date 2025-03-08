@@ -4,6 +4,7 @@ import random
 from textures import *
 from affichage import *
 import os
+import sys
 from settings import * 
 from sound import * 
 #importer les 4 cartes
@@ -11,9 +12,11 @@ from cartes.carte1 import carte1, texture_choisi_carte1, eaux1
 from cartes.carte2 import carte2, texture_choisi_carte2, eaux2
 from cartes.carte3 import carte3, texture_choisi_carte3, eaux3
 from cartes.carte4 import carte4, texture_choisi_carte4, eaux4
+import time
 
 PLAYER_MODE = True #Desactivé il enleve toute l'animation au debut pour pouvoir relacer le jeu plus rapidement quand on est entrain de developper 
 
+en_jeu = False
 
 eaux = [eaux1, eaux2, eaux3, eaux4]
 
@@ -29,30 +32,53 @@ if pg.joystick.get_count() > 0:
 else:
     print("Aucune manette détectée.")
 
+tick = 60
+
+police = pg.font.Font(None, 36)  
+
 cartes = [carte1, carte2, carte3, carte4]
-carte = cartes[0] 
 
-if PLAYER_MODE:
-    # Affichage de l'écran de chargement
-    loading_screen(fenetre, loading_image)
-    # Affichage de l'écran d'accueil
-    action = home_page(fenetre, start_button, credits_button)
+def relancer_jeu():
+    global carte, perso, CLE_TROUVER, LIMIT_CARTE, timer, cle, coffre1, fences
+    carte = cartes[0]
+    perso = pg.Rect(170, 220, 40, 40)
+    CLE_TROUVER = False
+    LIMIT_CARTE = 155
+    timer = tick * 10
 
-    # Gérer les actions de l'écran d'accueil
-    if action == 'quit':
-        pg.quit()
-        exit()
+    cle = []
+    coffre1 = []
+    fences = []
 
-    elif action == 'start':
-        start_button.fill((0, 0, 0, 0))
-        pg.mixer.music.fadeout(3000)
-        fade_out(fenetre, 1)
+    cle.append({'texture': cle_tex, "rect": pg.Rect(300, 300, 20, 12), "cle": False})
+    coffre1.append({'texture': coffre_ferme, "rect": pg.Rect(600, 300, 40, 40), "ouvert": False})
+    fences.append({'texture': fence_tex, "rect": pg.Rect(100, 120, 21, 66)})
+    fences.append({'texture': fence_tex, "rect": pg.Rect(100, 186, 21, 66)})
+    fences.append({'texture': fence_tex, "rect": pg.Rect(100, 252, 21, 66)})
+    fences.append({'texture': fence_tex, "rect": pg.Rect(100, 318, 21, 66)})
+    fences.append({'texture': fence_tex, "rect": pg.Rect(100, 384, 21, 66)})
+
+    if PLAYER_MODE:
+        # Affichage de l'écran de chargement
+        loading_screen(fenetre, loading_image)
+        # Affichage de l'écran d'accueil
+        action = home_page(fenetre, start_button, credits_button)
         
-        
-        pg.mixer.music.load(game_music)  # Load the game music
-        pg.mixer.music.play(-1)  # Play the game music in a loop
+        # Gérer les actions de l'écran d'accueil
+        if action == 'quit':
+            pg.quit()
+            exit()
 
-        
+        elif action == 'start':
+            start_button.fill((0, 0, 0, 0))
+            pg.mixer.music.fadeout(3000)
+            fade_out(fenetre, 1)
+            
+            
+            pg.mixer.music.load(game_music)  # Load the game music
+            pg.mixer.music.play(-1)  # Play the game music in a loop
+
+       
 
 
 #collision eau?
@@ -72,15 +98,23 @@ def collision_portail(): #création de la fonction de collision pour les portail
 #Boucle du jeu 
 continuer = True
 
-while continuer:
-    horloge.tick(60)
+while continuer: 
+
+    if not en_jeu:
+        relancer_jeu()
+        en_jeu = True
+
+    #lancer le jeu
+
+
+    horloge.tick(tick)
+    
     
     # Dessine le personnage
     fenetre.blit(image, perso)
 
     # Met à jour l'affichage
     pg.display.flip()
-
     if carte == cartes[0]: # Si on est sur la carte 1
         affichage_sol(fenetre, carte, texture_choisi_carte1) #on appelle la fonction affichage_sol pour afficher la carte
     elif carte == cartes[1]: # Si on est sur la carte 2
@@ -89,7 +123,15 @@ while continuer:
         affichage_sol(fenetre, carte, texture_choisi_carte3) #on appelle la fonction affichage_sol pour afficher la carte
     elif carte == cartes[3]: # Si on est sur la carte 4
         affichage_sol(fenetre, carte, texture_choisi_carte4) #on appelle la fonction affichage_sol pour afficher la carte
+
+    timer -= 1
+    texte = police.render(f"00:{timer // 60}", True, (255,255,255))
+    texte_rect = texte.get_rect(center=(LARGEUR - 35, 20))
+    fenetre.blit(texte, texte_rect)
     
+    #avoir les coordonné quand je click avec la souris
+    if pg.mouse.get_pressed()[0]:
+        print(pg.mouse.get_pos())
 
     #collision avec les portails?
     if collision_portail():
@@ -173,10 +215,13 @@ while continuer:
                 perso.left = LARGEUR
         
         elif perso.right <= 40:  # Dépasse par la gauche ? (collision)
+            if carte == cartes[2]: # Si on est sur la carte 3
+                perso.x -= final_dx
+
+        elif perso.right <= LIMIT_CARTE:  # Dépasse par la gauche ? (collision)
             if carte == cartes[0]: # Si on est sur la carte 1
                 perso.x -= final_dx
-            elif carte == cartes[2]: # Si on est sur la carte 3
-                perso.x -= final_dx
+
         try:
             if carte[perso.y // 40][perso.x // 40] == 0:
                 random.choice(footstep_sounds).play()
@@ -255,6 +300,36 @@ while continuer:
                 i3_anim = 0
             image = bas[i3_anim]
 
+    for cles in cle:
+        if not cles['cle'] and perso.colliderect(cles['rect']):
+            CLE_TROUVER = True
+            cles['cle'] = True
+            cle.remove(cles)
+        elif carte == cartes[3]:
+            fenetre.blit(cle[0]['texture'], cle[0]['rect'].topleft)
+            
+    for coffre in coffre1:
+        
+        if CLE_TROUVER:
+            if not coffre['ouvert'] and perso.colliderect(coffre1[0]['rect']):
+                coffre1[0]['texture'] = coffre_ouvert
+                coffre1[0]['ouvert'] = True
+                LIMIT_CARTE = 0
+                fences.pop(2)
+        if carte == cartes[0]:
+            fenetre.blit(coffre1[0]['texture'], coffre1[0]['rect'].topleft)
+            for fence in fences:
+                fenetre.blit(fence['texture'], fence['rect'].topleft)
 
+        if carte == cartes[0]:
+            #blit every fences
+            for fence in fences:
+                fenetre.blit(fence['texture'], fence['rect'].topleft)
+
+    affichage_decorations(fenetre, carte)
+
+    if timer == 0:
+        en_jeu = False
+    
 # on stoppe pygame
 pg.quit()

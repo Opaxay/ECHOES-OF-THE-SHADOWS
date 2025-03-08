@@ -9,7 +9,10 @@ from cartes.carte2 import *
 from cartes.carte3 import *
 from cartes.carte4 import *
 
+
 cartes = [carte1, carte2, carte3, carte4]
+
+CLE_TROUVER = False
 
 
 def affichage_sol(fenetre, carte, chosen_textures):
@@ -75,8 +78,6 @@ def affichage_sol(fenetre, carte, chosen_textures):
             elif carte[y][x] == 23:
                 texture = reversec4
                 fenetre.blit(texture, (x * 40, y * 40))
-                
-            
 
 
 
@@ -89,19 +90,13 @@ def affichage_sol(fenetre, carte, chosen_textures):
 
 
 
-
-
-
-
-
-
-
-
+def affichage_decorations(fenetre, carte):
     # Draw the decorations
     if carte == cartes[0]:
         for decoration in decorations1:
             texture, position = decoration
             fenetre.blit(texture, position)
+            
 
     if carte == cartes[1]:
         for decoration in decorations2:
@@ -117,6 +112,7 @@ def affichage_sol(fenetre, carte, chosen_textures):
         for decoration in decorations4:
             texture, position = decoration
             fenetre.blit(texture, position)
+            
 
 def loading_screen(fenetre, loading_image):
 
@@ -139,7 +135,6 @@ def loading_screen(fenetre, loading_image):
 def home_page(fenetre, start_button, credits_button):
     start_button = pg.transform.scale(start_button, (614, 82))
     fenetre.blit(start_button, (93, 249))
-
     #lancer le jeu quand on clique sur le bouton de la manette
     while True:
         pg.display.flip()
@@ -155,7 +150,7 @@ def home_page(fenetre, start_button, credits_button):
             elif event.type == MOUSEMOTION:
                 return 'start'
             
-        pg.time.Clock().tick(30)
+        pg.time.Clock().tick(60)
 
 black_surface = pg.Surface((800, 400))
 black_surface.fill((0, 0, 0))

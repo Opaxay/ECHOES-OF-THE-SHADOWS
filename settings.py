@@ -11,7 +11,7 @@ icone = pg.image.load('textures/objects/locked_chest.png')
 pg.display.set_icon(icone)
 pg.display.set_caption("ECHOES OF THE SHADOWS")
 
-perso = pg.Rect(50, 250, 40, 40)  # le perso, ou plutôt sa "hitbox"
+perso = pg.Rect(150, 250, 40, 40)  # le perso, ou plutôt sa "hitbox"
 vitesse = 2.5
 i_anim = 0 
 portail = [] #création de la liste (vide) pour les portails
