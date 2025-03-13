@@ -98,8 +98,6 @@ fence_tex = pg.transform.scale(fence_tex, (21, 66))  # Resize the decoration tex
 cle_tex = pg.image.load('textures/objects/cle.png').convert_alpha()
 cle_tex = pg.transform.scale(cle_tex, (30, 22))  # Resize the decoration texture
 texture_choisi_carte1 = [[None for _ in range(20)] for _ in range(13)]
-void = pg.image.load('textures/void.png').convert_alpha()
-void = pg.transform.scale(void, (40, 40))  # Resize the decoration texture
 
 textures_1 = {
     1: [pg.transform.rotate(water_texture, angle) for angle in [-90, 90, 180]],
